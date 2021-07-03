@@ -5,7 +5,7 @@ import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import gb.myhomework.mydictionary.R
 import gb.myhomework.mydictionary.model.data.AppState
-import gb.myhomework.mydictionary.presenter.Interactor
+import gb.myhomework.mydictionary.interactor.Interactor
 import gb.myhomework.mydictionary.ui.AlertDialogFragment
 import gb.myhomework.mydictionary.utils.isOnline
 import gb.myhomework.mydictionary.viewmodel.BaseViewModel
@@ -44,7 +44,7 @@ abstract class BaseActivity<T : AppState, I : Interactor<T>> : AppCompatActivity
         return supportFragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG) == null
     }
 
-    abstract fun renderData(dataModel: T)
+    abstract fun renderData(appState: T)
 
     companion object {
         private const val DIALOG_FRAGMENT_TAG = "DIALOG_FRAGMENT_TAG"

@@ -9,10 +9,11 @@ import gb.myhomework.mydictionary.model.data.DataModel
 import kotlinx.android.synthetic.main.recyclerview_item.view.*
 
 class MainAdapter(
-    private var onListItemClickListener: OnListItemClickListener,
-    private var data: List<DataModel>
+    private var onListItemClickListener: OnListItemClickListener
 ) :
     RecyclerView.Adapter<MainAdapter.RecyclerItemViewHolder>() {
+
+    private var data: List<DataModel> = arrayListOf()
 
     fun setData(data: List<DataModel>) {
         this.data = data
