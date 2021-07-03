@@ -1,50 +1,41 @@
 package gb.myhomework.mydictionary.viewmodel
 
 import androidx.lifecycle.LiveData
+import gb.myhomework.mydictionary.interactor.MainInteractor
 import gb.myhomework.mydictionary.model.data.AppState
-import gb.myhomework.mydictionary.presenter.MainInteractor
 import gb.myhomework.mydictionary.utils.parseSearchResults
-import io.reactivex.disposables.Disposable
-import io.reactivex.observers.DisposableObserver
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class MainViewModel @Inject constructor(
-    private val interactor: MainInteractor
-) : BaseViewModel<AppState>() {
 
-    private var appState: AppState? = null
+class MainViewModel(private val interactor: MainInteractor) : BaseViewModel<AppState>() {
+
+    private val liveDataForViewToObserve: LiveData<AppState> = mutableLiveData
 
     fun subscribe(): LiveData<AppState> {
         return liveDataForViewToObserve
     }
 
     override fun getData(word: String, isOnline: Boolean) {
-        compositeDisposable.add(
-            interactor.getData(word, isOnline)
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .doOnSubscribe(doOnSubscribe())
-                .subscribeWith(getObserver())
-        )
+        mutableLiveData.value = AppState.Loading(null)
+        cancelJob()
+        viewModelCoroutineScope.launch { startInteractor(word, isOnline) }
     }
 
-    private fun doOnSubscribe(): (Disposable) -> Unit =
-        { liveDataForViewToObserve.value = AppState.Loading(null) }
-
-    private fun getObserver(): DisposableObserver<AppState> {
-        return object : DisposableObserver<AppState>() {
-
-            override fun onNext(state: AppState) {
-                appState = parseSearchResults(state)
-                liveDataForViewToObserve.value = appState
-            }
-
-            override fun onError(e: Throwable) {
-                liveDataForViewToObserve.value = AppState.Error(e)
-            }
-
-            override fun onComplete() {
-            }
+    private suspend fun startInteractor(word: String, isOnline: Boolean) =
+        withContext(Dispatchers.IO) {
+            val result = interactor.getData(word, isOnline)
+            val mapped = parseSearchResults(result)
+            mutableLiveData.postValue(mapped)
         }
+
+    override fun handleError(error: Throwable) {
+        mutableLiveData.postValue(AppState.Error(error))
+    }
+
+    override fun onCleared() {
+        mutableLiveData.value = AppState.Success(null)
+        super.onCleared()
     }
 }

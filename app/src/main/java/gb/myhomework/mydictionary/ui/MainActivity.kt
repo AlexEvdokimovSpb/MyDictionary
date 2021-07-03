@@ -3,31 +3,23 @@ package gb.myhomework.mydictionary.ui
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import gb.myhomework.mydictionary.R
-import gb.myhomework.mydictionary.application.MyDictionaryApp
+import gb.myhomework.mydictionary.interactor.MainInteractor
 import gb.myhomework.mydictionary.model.data.AppState
 import gb.myhomework.mydictionary.model.data.DataModel
-import gb.myhomework.mydictionary.presenter.MainInteractor
 import gb.myhomework.mydictionary.ui.adapter.MainAdapter
 import gb.myhomework.mydictionary.ui.base.BaseActivity
 import gb.myhomework.mydictionary.utils.isOnline
 import gb.myhomework.mydictionary.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<AppState, MainInteractor>() {
 
-    @Inject
-    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+    override val model: MainViewModel by viewModel()
 
-    override val model: MainViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
-
-    private var adapter: MainAdapter? = null
+    private val adapter: MainAdapter by lazy { MainAdapter(onListItemClickListener) }
 
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
@@ -37,25 +29,10 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        MyDictionaryApp.component.inject(this)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        model.subscribe().observe(this@MainActivity, Observer<AppState> { renderData(it) })
-
-        main_activity_recyclerview.layoutManager = LinearLayoutManager(applicationContext)
-        main_activity_recyclerview.adapter = adapter
-
-        search_imageView.setOnClickListener {
-            val isNetworkAvailable = isOnline(applicationContext)
-            if (isNetworkAvailable) {
-                val searchWord = search_edit_text.text.toString()
-                model.getData(searchWord, true)
-            } else {
-                showNoInternetConnectionDialog()
-            }
-        }
+        initViewModel()
+        initViews()
     }
 
     override fun renderData(appState: AppState) {
@@ -66,14 +43,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
                     showErrorScreen(getString(R.string.empty_server_response_on_success))
                 } else {
                     showViewSuccess()
-                    if (adapter == null) {
-                        main_activity_recyclerview.layoutManager =
-                            LinearLayoutManager(applicationContext)
-                        main_activity_recyclerview.adapter =
-                            MainAdapter(onListItemClickListener, dataModel)
-                    } else {
-                        adapter!!.setData(dataModel)
-                    }
+                    adapter.setData(dataModel)
                 }
             }
             is AppState.Loading -> {
@@ -89,6 +59,28 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
             }
             is AppState.Error -> {
                 showErrorScreen(appState.error.message)
+            }
+        }
+    }
+
+    private fun initViewModel() {
+        if (main_activity_recyclerview.adapter != null) {
+            throw IllegalStateException("The ViewModel should be initialised first")
+        }
+        model.subscribe().observe(this@MainActivity, { renderData(it) })
+    }
+
+    private fun initViews() {
+        main_activity_recyclerview.layoutManager = LinearLayoutManager(applicationContext)
+        main_activity_recyclerview.adapter = adapter
+
+        search_imageView.setOnClickListener {
+            val isNetworkAvailable = isOnline(applicationContext)
+            if (isNetworkAvailable) {
+                val searchWord = search_edit_text.text.toString()
+                model.getData(searchWord, true)
+            } else {
+                showNoInternetConnectionDialog()
             }
         }
     }

@@ -1,4 +1,4 @@
-package gb.myhomework.onlinedictionary.model.datasourse
+package gb.myhomework.mydictionary.model.datasource
 
 import okhttp3.Interceptor
 import okhttp3.Response
