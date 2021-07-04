@@ -1,8 +1,9 @@
 package gb.myhomework.mydictionary.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
+import android.view.Menu
+import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import gb.myhomework.mydictionary.R
 import gb.myhomework.mydictionary.interactor.MainInteractor
@@ -10,6 +11,8 @@ import gb.myhomework.mydictionary.model.data.AppState
 import gb.myhomework.mydictionary.model.data.DataModel
 import gb.myhomework.mydictionary.ui.adapter.MainAdapter
 import gb.myhomework.mydictionary.ui.base.BaseActivity
+import gb.myhomework.mydictionary.ui.history.HistoryActivity
+import gb.myhomework.mydictionary.utils.convertMeaningsToString
 import gb.myhomework.mydictionary.utils.isOnline
 import gb.myhomework.mydictionary.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,7 +27,14 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
             override fun onItemClick(data: DataModel) {
-                Toast.makeText(this@MainActivity, data.text, Toast.LENGTH_SHORT).show()
+                startActivity(
+                    DescriptionActivity.getIntent(
+                        this@MainActivity,
+                        data.text!!,
+                        convertMeaningsToString(data.meanings!!),
+                        data.meanings[0].imageUrl
+                    )
+                )
             }
         }
 
@@ -35,31 +45,23 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         initViews()
     }
 
-    override fun renderData(appState: AppState) {
-        when (appState) {
-            is AppState.Success -> {
-                val dataModel = appState.data
-                if (dataModel == null || dataModel.isEmpty()) {
-                    showErrorScreen(getString(R.string.empty_server_response_on_success))
-                } else {
-                    showViewSuccess()
-                    adapter.setData(dataModel)
-                }
+
+    override fun setDataToAdapter(data: List<DataModel>) {
+        adapter.setData(data)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.history_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_history -> {
+                startActivity(Intent(this, HistoryActivity::class.java))
+                true
             }
-            is AppState.Loading -> {
-                showViewLoading()
-                if (appState.progress != null) {
-                    progress_bar_horizontal.visibility = View.VISIBLE
-                    progress_bar_round.visibility = View.GONE
-                    progress_bar_horizontal.progress = appState.progress
-                } else {
-                    progress_bar_horizontal.visibility = View.GONE
-                    progress_bar_round.visibility = View.VISIBLE
-                }
-            }
-            is AppState.Error -> {
-                showErrorScreen(appState.error.message)
-            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -84,31 +86,4 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
             }
         }
     }
-
-    private fun showErrorScreen(error: String?) {
-        showViewError()
-        error_textview.text = error ?: getString(R.string.undefined_error)
-        reload_button.setOnClickListener {
-            model.getData("hi", true)
-        }
-    }
-
-    private fun showViewSuccess() {
-        success_linear_layout.visibility = View.VISIBLE
-        loading_frame_layout.visibility = View.GONE
-        error_linear_layout.visibility = View.GONE
-    }
-
-    private fun showViewLoading() {
-        success_linear_layout.visibility = View.GONE
-        loading_frame_layout.visibility = View.VISIBLE
-        error_linear_layout.visibility = View.GONE
-    }
-
-    private fun showViewError() {
-        success_linear_layout.visibility = View.GONE
-        loading_frame_layout.visibility = View.GONE
-        error_linear_layout.visibility = View.VISIBLE
-    }
-
 }

@@ -1,7 +1,8 @@
-package gb.myhomework.mydictionary.model.datasource
+package gb.myhomework.mydictionary.model.repository
 
 import gb.myhomework.mydictionary.model.data.AppState
 
-interface DataSourceLocal<T> : DataSource<T> {
+interface RepositoryLocal<T> : Repository<T> {
+
     suspend fun saveToDB(appState: AppState)
 }
