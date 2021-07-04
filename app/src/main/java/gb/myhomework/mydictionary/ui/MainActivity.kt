@@ -2,7 +2,6 @@ package gb.myhomework.mydictionary.ui
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import gb.myhomework.mydictionary.R
 import gb.myhomework.mydictionary.interactor.MainInteractor
@@ -10,6 +9,7 @@ import gb.myhomework.mydictionary.model.data.AppState
 import gb.myhomework.mydictionary.model.data.DataModel
 import gb.myhomework.mydictionary.ui.adapter.MainAdapter
 import gb.myhomework.mydictionary.ui.base.BaseActivity
+import gb.myhomework.mydictionary.utils.convertMeaningsToString
 import gb.myhomework.mydictionary.utils.isOnline
 import gb.myhomework.mydictionary.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,7 +24,14 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
             override fun onItemClick(data: DataModel) {
-                Toast.makeText(this@MainActivity, data.text, Toast.LENGTH_SHORT).show()
+                startActivity(
+                    DescriptionActivity.getIntent(
+                        this@MainActivity,
+                        data.text!!,
+                        convertMeaningsToString(data.meanings!!),
+                        data.meanings[0].imageUrl
+                    )
+                )
             }
         }
 
