@@ -35,6 +35,13 @@ android {
 }
 
 dependencies {
+    //Modules
+    implementation project(Modules.core)
+    implementation project(Modules.model)
+    implementation project(Modules.repository)
+    implementation project(Modules.utils)
+    implementation project(Modules.historyScreen) 
+
     // Kotlin
     implementation Kotlin.stdlib
     implementation Kotlin.core

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import gb.myhomework.mydictionary.R
-import gb.myhomework.mydictionary.model.data.DataModel
+import gb.myhomework.model.DataModel
 import kotlinx.android.synthetic.main.recyclerview_item.view.*
 
 class MainAdapter(
@@ -13,9 +13,9 @@ class MainAdapter(
 ) :
     RecyclerView.Adapter<MainAdapter.RecyclerItemViewHolder>() {
 
-    private var data: List<DataModel> = arrayListOf()
+    private var data: List<gb.myhomework.model.DataModel> = arrayListOf()
 
-    fun setData(data: List<DataModel>) {
+    fun setData(data: List<gb.myhomework.model.DataModel>) {
         this.data = data
         notifyDataSetChanged()
     }
@@ -37,7 +37,7 @@ class MainAdapter(
 
     inner class RecyclerItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(data: DataModel) {
+        fun bind(data: gb.myhomework.model.DataModel) {
             if (layoutPosition != RecyclerView.NO_POSITION) {
                 itemView.header_textview_recycler_item.text = data.text
                 itemView.description_textview_recycler_item.text =
@@ -48,11 +48,11 @@ class MainAdapter(
         }
     }
 
-    private fun openInNewWindow(listItemData: DataModel) {
+    private fun openInNewWindow(listItemData: gb.myhomework.model.DataModel) {
         onListItemClickListener.onItemClick(listItemData)
     }
 
     interface OnListItemClickListener {
-        fun onItemClick(data: DataModel)
+        fun onItemClick(data: gb.myhomework.model.DataModel)
     }
 }
