@@ -7,18 +7,14 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import gb.myhomework.mydictionary.R
 import gb.myhomework.mydictionary.interactor.MainInteractor
-import gb.myhomework.mydictionary.model.data.AppState
-import gb.myhomework.mydictionary.model.data.DataModel
 import gb.myhomework.mydictionary.ui.adapter.MainAdapter
-import gb.myhomework.mydictionary.ui.base.BaseActivity
-import gb.myhomework.mydictionary.ui.history.HistoryActivity
 import gb.myhomework.mydictionary.utils.convertMeaningsToString
 import gb.myhomework.mydictionary.utils.isOnline
 import gb.myhomework.mydictionary.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class MainActivity : BaseActivity<AppState, MainInteractor>() {
+class MainActivity : gb.myhomework.core.base.BaseActivity<gb.myhomework.model.AppState, MainInteractor>() {
 
     override val model: MainViewModel by viewModel()
 
@@ -26,13 +22,13 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
 
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
-            override fun onItemClick(data: DataModel) {
+            override fun onItemClick(data: gb.myhomework.model.DataModel) {
                 startActivity(
                     DescriptionActivity.getIntent(
                         this@MainActivity,
                         data.text!!,
                         convertMeaningsToString(data.meanings!!),
-                        data.meanings[0].imageUrl
+                        data.meanings!![0].imageUrl
                     )
                 )
             }
@@ -46,7 +42,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     }
 
 
-    override fun setDataToAdapter(data: List<DataModel>) {
+    override fun setDataToAdapter(data: List<gb.myhomework.model.DataModel>) {
         adapter.setData(data)
     }
 
@@ -58,7 +54,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_history -> {
-                startActivity(Intent(this, HistoryActivity::class.java))
+                startActivity(Intent(this, gb.myhomework.historyscreen.HistoryActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)

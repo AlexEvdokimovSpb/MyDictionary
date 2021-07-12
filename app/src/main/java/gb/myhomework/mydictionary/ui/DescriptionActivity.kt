@@ -62,7 +62,7 @@ class DescriptionActivity : AppCompatActivity() {
         if (isOnline(applicationContext)) {
             setData()
         } else {
-            AlertDialogFragment.newInstance(
+            gb.myhomework.utils.AlertDialogFragment.newInstance(
                 getString(R.string.dialog_title_device_is_offline),
                 getString(R.string.dialog_message_device_is_offline)
             ).show(

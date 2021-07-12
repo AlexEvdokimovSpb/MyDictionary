@@ -2,23 +2,23 @@ package gb.myhomework.mydictionary.viewmodel
 
 import androidx.lifecycle.LiveData
 import gb.myhomework.mydictionary.interactor.MainInteractor
-import gb.myhomework.mydictionary.model.data.AppState
+import gb.myhomework.model.AppState
 import gb.myhomework.mydictionary.utils.parseSearchResults
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class MainViewModel(private val interactor: MainInteractor) : BaseViewModel<AppState>() {
+class MainViewModel(private val interactor: MainInteractor) : gb.myhomework.core.viewmodel.BaseViewModel<gb.myhomework.model.AppState>() {
 
-    private val liveDataForViewToObserve: LiveData<AppState> = mutableLiveData
+    private val liveDataForViewToObserve: LiveData<gb.myhomework.model.AppState> = mutableLiveData
 
-    fun subscribe(): LiveData<AppState> {
+    fun subscribe(): LiveData<gb.myhomework.model.AppState> {
         return liveDataForViewToObserve
     }
 
     override fun getData(word: String, isOnline: Boolean) {
-        mutableLiveData.value = AppState.Loading(null)
+        mutableLiveData.value = gb.myhomework.model.AppState.Loading(null)
         cancelJob()
         viewModelCoroutineScope.launch { startInteractor(word, isOnline) }
     }
@@ -31,11 +31,11 @@ class MainViewModel(private val interactor: MainInteractor) : BaseViewModel<AppS
         }
 
     override fun handleError(error: Throwable) {
-        mutableLiveData.postValue(AppState.Error(error))
+        mutableLiveData.postValue(gb.myhomework.model.AppState.Error(error))
     }
 
     override fun onCleared() {
-        mutableLiveData.value = AppState.Success(null)
+        mutableLiveData.value = gb.myhomework.model.AppState.Success(null)
         super.onCleared()
     }
 }
