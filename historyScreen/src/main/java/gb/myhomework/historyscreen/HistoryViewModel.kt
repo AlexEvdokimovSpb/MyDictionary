@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import gb.myhomework.mydictionary.utils.parseLocalSearchResults
 import kotlinx.coroutines.launch
 
-class HistoryViewModel(private val interactor: gb.myhomework.historyscreen.HistoryInteractor) :
+class HistoryViewModel(private val interactor: HistoryInteractor) :
     gb.myhomework.core.viewmodel.BaseViewModel<gb.myhomework.model.AppState>() {
 
     private val liveDataForViewToObserve: LiveData<gb.myhomework.model.AppState> = mutableLiveData
