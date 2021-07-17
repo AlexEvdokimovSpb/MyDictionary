@@ -20,4 +20,5 @@
     <string name="dialog_tittle_sorry">Sorry</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_title_stub">Undefined error</string>
+    <string name="module_history_name">history</string>
 </resources>

@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 private const val HISTORY_ACTIVITY_PATH = "gb.myhomework.historyscreen.HistoryActivity"
-private const val HISTORY_ACTIVITY_FEATURE_NAME = "historyScreen"
+private const val HISTORY_ACTIVITY_FEATURE_NAME = "historyscreen"
 private const val REQUEST_CODE = 42
 
 class MainActivity : gb.myhomework.core.base.BaseActivity<gb.myhomework.model.AppState, MainInteractor>() {

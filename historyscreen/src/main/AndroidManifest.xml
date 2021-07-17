@@ -5,7 +5,7 @@
 
     <dist:module
         dist:instant="false"
-        dist:title="@string/app_name">
+        dist:title="@string/module_history_name">
         <dist:delivery>
             <dist:on-demand />
         </dist:delivery>
