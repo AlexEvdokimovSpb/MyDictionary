@@ -80,7 +80,7 @@ class MainActivity : gb.myhomework.core.base.BaseActivity<gb.myhomework.model.Ap
                 ) {
                     appUpdateManager.startUpdateFlowForResult(
                         appUpdateInfo,
-                        AppUpdateType.IMMEDIATE,
+                        AppUpdateType.FLEXIBLE,
                         this,
                         REQUEST_CODE
                     )
