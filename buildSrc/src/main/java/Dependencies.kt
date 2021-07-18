@@ -20,7 +20,7 @@ object Modules {
     const val repository = ":repository"
     const val utils = ":utils"
     // Features
-    const val historyScreen = ":historyScreen"
+    const val historyscreen = ":historyscreen"
 }
 
 object Versions {
@@ -61,6 +61,9 @@ object Versions {
     const val runtime = "2.2.0-alpha01"
     const val roomCompiler = "2.2.0-alpha01"
 
+    //Google Play
+    const val googlePlayCore = "1.6.3"
+
     // Test
     const val jUnit = "4.+"
     const val runner = "1.2.0"
@@ -69,33 +72,33 @@ object Versions {
 
 
 object Tools {
-    const val multidex = "com.android.support:multidex:${Versions.multidex}" //
+    const val multidex = "com.android.support:multidex:${Versions.multidex}"
 }
 
 object Design {
-    const val appcompat = "androidx.appcompat:appcompat:${Versions.appcompat}" //
-    const val material = "com.google.android.material:material:${Versions.material}"//
-    const val constraintlayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintlayout}"//
+    const val appcompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
+    const val material = "com.google.android.material:material:${Versions.material}"
+    const val constraintlayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintlayout}"
 }
 
 object Kotlin {
-    const val core = "androidx.core:core-ktx:${Versions.core}" //
-    const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.stdlib}" //
-    const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesCore}"//
-    const val coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutinesAndroid}"//
-    const val coroutines_adapter = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${Versions.coroutinesAdapter}"//
+    const val core = "androidx.core:core-ktx:${Versions.core}"
+    const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.stdlib}"
+    const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesCore}"
+    const val coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutinesAndroid}"
+    const val coroutines_adapter = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${Versions.coroutinesAdapter}"
 }
 
 object Retrofit {
-    const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"//
-    const val converter_gson = "com.squareup.retrofit2:converter-gson:${Versions.converterGson}"//
+    const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
+    const val converter_gson = "com.squareup.retrofit2:converter-gson:${Versions.converterGson}"
     const val logging_interceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.interceptor}"
     const val adapter_coroutines = "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:${Versions.adapterCoroutines}"
 }
 
 object Koin {
-    const val koin_android = "org.koin:koin-android:${Versions.koinAndroid}" //
-    const val koin_view_model = "org.koin:koin-android-viewmodel:${Versions.koinViewModel}"//
+    const val koin_android = "org.koin:koin-android:${Versions.koinAndroid}"
+    const val koin_view_model = "org.koin:koin-android-viewmodel:${Versions.koinViewModel}"
 }
 
 object Picasso {
@@ -110,8 +113,13 @@ object Room {
     const val room_ktx = "androidx.room:room-ktx:${Versions.roomKtx}"
 }
 
+object GooglePlay {
+    const val googlePlayCore = "com.google.android.play:core:${Versions.googlePlayCore}"
+}
+
 object TestImpl {
     const val junit = "junit:junit:${Versions.jUnit}"
     const val runner = "androidx.test:runner:${Versions.runner}"
     const val espresso = "androidx.test.espresso:espresso-core:${Versions.espressoCore}"
 }
+
