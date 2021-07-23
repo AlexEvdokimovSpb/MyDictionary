@@ -1,11 +1,28 @@
-package gb.myhomework.historyscreen
+package gb.myhomework.mydictionary.utils
 
 import gb.myhomework.model.AppState
 import gb.myhomework.model.DataModel
 import gb.myhomework.model.Meaning
+import gb.myhomework.model.TranslatedMeaning
+import gb.myhomework.model.dto.SearchResultDto
 
-fun parseLocalSearchResults(data: AppState): AppState {
-    return AppState.Success(mapResult(data, false))
+fun mapSearchResultToResult(searchResults: List<SearchResultDto>): List<DataModel> {
+    return searchResults.map { searchResult ->
+        var meanings: List<Meaning> = listOf()
+        searchResult.meanings?.let {
+            meanings = it.map { meaningsDto ->
+                Meaning(
+                    TranslatedMeaning(meaningsDto?.translation?.translation ?: ""),
+                    meaningsDto?.imageUrl ?: ""
+                )
+            }
+        }
+        DataModel(searchResult.text ?: "", meanings)
+    }
+}
+
+fun parseOnlineSearchResults(data: AppState): AppState {
+    return AppState.Success(mapResult(data, true))
 }
 
 private fun mapResult(
@@ -51,16 +68,7 @@ private fun parseOnlineResult(
 ) {
     if (searchDataModel.text.isNotBlank() && searchDataModel.meanings.isNotEmpty()) {
         val newMeanings = arrayListOf<Meaning>()
-        for (meaning in searchDataModel.meanings) {
-            if (meaning.translatedMeaning.translatedMeaning.isBlank()) {
-                newMeanings.add(
-                    Meaning(
-                        meaning.translatedMeaning,
-                        meaning.imageUrl
-                    )
-                )
-            }
-        }
+        newMeanings.addAll(searchDataModel.meanings.filter { it.translatedMeaning.translatedMeaning.isNotBlank() })
         if (newMeanings.isNotEmpty()) {
             newSearchDataModels.add(
                 DataModel(
@@ -70,4 +78,16 @@ private fun parseOnlineResult(
             )
         }
     }
+}
+
+fun convertMeaningsToSingleString(meanings: List<Meaning>): String {
+    var meaningsSeparatedByComma = String()
+    for ((index, meaning) in meanings.withIndex()) {
+        meaningsSeparatedByComma += if (index + 1 != meanings.size) {
+            String.format("%s%s", meaning.translatedMeaning.translatedMeaning, ", ")
+        } else {
+            meaning.translatedMeaning.translatedMeaning
+        }
+    }
+    return meaningsSeparatedByComma
 }

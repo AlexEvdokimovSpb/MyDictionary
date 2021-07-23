@@ -1,15 +1,13 @@
 package gb.myhomework.repository
 
 import gb.myhomework.model.AppState
-import gb.myhomework.model.DataModel
-import gb.myhomework.mydictionary.utils.convertDataModelSuccessToEntity
-import gb.myhomework.mydictionary.utils.mapHistoryEntityToSearchResult
+import gb.myhomework.model.dto.SearchResultDto
 import gb.myhomework.repository.room.HistoryDao
 
 class RoomDataBaseImplementation(private val historyDao: HistoryDao) :
-    DataSourceLocal<List<DataModel>> {
+    DataSourceLocal<List<SearchResultDto>> {
 
-    override suspend fun getData(word: String): List<DataModel> {
+    override suspend fun getData(word: String): List<SearchResultDto> {
         return mapHistoryEntityToSearchResult(historyDao.all())
     }
 
@@ -19,3 +17,4 @@ class RoomDataBaseImplementation(private val historyDao: HistoryDao) :
         }
     }
 }
+

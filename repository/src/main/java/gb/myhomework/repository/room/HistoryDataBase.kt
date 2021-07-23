@@ -13,5 +13,5 @@ import androidx.room.RoomDatabase
 
 abstract class HistoryDataBase : RoomDatabase() {
 
-    abstract fun historyDao(): gb.myhomework.repository.room.HistoryDao
+    abstract fun historyDao(): HistoryDao
 }
