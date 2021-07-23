@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -16,25 +18,35 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
+import gb.myhomework.core.base.BaseActivity
+import gb.myhomework.model.AppState
+import gb.myhomework.model.DataModel
 import gb.myhomework.mydictionary.R
+import gb.myhomework.mydictionary.di.injectDependencies
+import gb.myhomework.mydictionary.utils.convertMeaningsToSingleString
 import gb.myhomework.mydictionary.interactor.MainInteractor
 import gb.myhomework.mydictionary.ui.adapter.MainAdapter
-import gb.myhomework.mydictionary.utils.convertMeaningsToString
 import gb.myhomework.mydictionary.utils.isOnline
 import gb.myhomework.mydictionary.viewmodel.MainViewModel
+import gb.myhomework.utils.viewById
 import kotlinx.android.synthetic.main.activity_main.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.android.scope.currentScope
 
 private const val HISTORY_ACTIVITY_PATH = "gb.myhomework.historyscreen.HistoryActivity"
 private const val HISTORY_ACTIVITY_FEATURE_NAME = "historyscreen"
 private const val REQUEST_CODE = 42
 
-class MainActivity : gb.myhomework.core.base.BaseActivity<gb.myhomework.model.AppState, MainInteractor>() {
+class MainActivity : BaseActivity<AppState, MainInteractor>() {
 
-    override val model: MainViewModel by viewModel()
-    private val adapter: MainAdapter by lazy { MainAdapter(onListItemClickListener) }
+    override val layoutRes = R.layout.activity_main
+    override lateinit var model: MainViewModel
+
+    private val mainActivityRecyclerView by viewById<RecyclerView>(R.id.main_activity_recyclerview)
+
     private lateinit var splitInstallManager: SplitInstallManager
     private lateinit var appUpdateManager: AppUpdateManager
+
+    private val adapter: MainAdapter by lazy { MainAdapter(onListItemClickListener) }
 
     private val stateUpdatedListener: InstallStateUpdatedListener =
         InstallStateUpdatedListener { state ->
@@ -47,12 +59,12 @@ class MainActivity : gb.myhomework.core.base.BaseActivity<gb.myhomework.model.Ap
 
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
-            override fun onItemClick(data: gb.myhomework.model.DataModel) {
+            override fun onItemClick(data: DataModel) {
                 startActivity(
                     DescriptionActivity.getIntent(
                         this@MainActivity,
                         data.text!!,
-                        convertMeaningsToString(data.meanings!!),
+                        convertMeaningsToSingleString(data.meanings),
                         data.meanings!![0].imageUrl
                     )
                 )
@@ -61,7 +73,6 @@ class MainActivity : gb.myhomework.core.base.BaseActivity<gb.myhomework.model.Ap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         initViewModel()
         initViews()
         checkForUpdates()
@@ -103,7 +114,7 @@ class MainActivity : gb.myhomework.core.base.BaseActivity<gb.myhomework.model.Ap
         }
     }
 
-    override fun setDataToAdapter(data: List<gb.myhomework.model.DataModel>) {
+    override fun setDataToAdapter(data: List<DataModel>) {
         adapter.setData(data)
     }
 
@@ -142,16 +153,16 @@ class MainActivity : gb.myhomework.core.base.BaseActivity<gb.myhomework.model.Ap
     }
 
     private fun initViewModel() {
-        if (main_activity_recyclerview.adapter != null) {
-            throw IllegalStateException("The ViewModel should be initialised first")
-        }
-        model.subscribe().observe(this@MainActivity, { renderData(it) })
+        check(mainActivityRecyclerView.adapter == null) { "The ViewModel should be initialised first" }
+        injectDependencies()
+        val viewModel: MainViewModel by currentScope.inject()
+        model = viewModel
+        model.subscribe().observe(this@MainActivity, Observer<AppState> { renderData(it) })
     }
 
     private fun initViews() {
-        main_activity_recyclerview.layoutManager = LinearLayoutManager(applicationContext)
-        main_activity_recyclerview.adapter = adapter
-
+        mainActivityRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
+        mainActivityRecyclerView.adapter = adapter
         search_imageView.setOnClickListener {
             val isNetworkAvailable = isOnline(applicationContext)
             if (isNetworkAvailable) {

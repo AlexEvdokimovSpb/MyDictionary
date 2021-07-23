@@ -1,6 +1,8 @@
 package gb.myhomework.repository
 
-interface RepositoryLocal<T> : gb.myhomework.repository.Repository<T> {
+import gb.myhomework.model.AppState
 
-    suspend fun saveToDB(appState: gb.myhomework.model.AppState)
+interface RepositoryLocal<T> : Repository<T> {
+
+    suspend fun saveToDB(appState: AppState)
 }

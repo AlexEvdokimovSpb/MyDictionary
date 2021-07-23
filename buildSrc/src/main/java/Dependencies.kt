@@ -48,8 +48,8 @@ object Versions {
     const val adapterCoroutines = "1.0.0"
 
     // Koin
-    const val koinAndroid = "2.2.0"
-    const val koinViewModel = "2.2.0"
+    const val koinAndroid = "2.0.1"
+    const val koinViewModel = "2.0.1"
 
     // Picasso
     const val picasso = "2.5.2"

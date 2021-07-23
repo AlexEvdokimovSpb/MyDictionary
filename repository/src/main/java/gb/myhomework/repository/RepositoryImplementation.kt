@@ -1,16 +1,12 @@
 package gb.myhomework.repository
 
-class RepositoryImplementation(private val dataSource: gb.myhomework.repository.DataSource<List<gb.myhomework.model.DataModel>>) :
-    gb.myhomework.repository.Repository<List<gb.myhomework.model.DataModel>> {
+import gb.myhomework.model.dto.SearchResultDto
 
-    private val cache = mutableMapOf<String, List<gb.myhomework.model.DataModel>>()
+class RepositoryImplementation(private val dataSource: DataSource<List<SearchResultDto>>) :
+    Repository<List<SearchResultDto>> {
 
-    override suspend fun getData(word: String): List<gb.myhomework.model.DataModel>? {
-        return if (cache.containsKey(word)) {
-            cache[word]
-        } else {
-            cache[word] = dataSource.getData(word)
-            dataSource.getData(word)
-        }
+    override suspend fun getData(word: String): List<SearchResultDto> {
+        return dataSource.getData(word)
     }
 }
+

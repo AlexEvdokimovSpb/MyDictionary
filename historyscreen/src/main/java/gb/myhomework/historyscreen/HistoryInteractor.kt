@@ -1,20 +1,26 @@
 package gb.myhomework.historyscreen
 
-class HistoryInteractor(
-    private val repositoryRemote: gb.myhomework.repository.Repository<List<gb.myhomework.model.DataModel>>,
-    private val repositoryLocal: gb.myhomework.repository.RepositoryLocal<List<gb.myhomework.model.DataModel>>
-) : gb.myhomework.core.interact.Interactor<gb.myhomework.model.AppState> {
+import gb.myhomework.core.interact.Interactor
+import gb.myhomework.model.AppState
+import gb.myhomework.model.dto.SearchResultDto
+import gb.myhomework.mydictionary.utils.mapSearchResultToResult
+import gb.myhomework.repository.Repository
+import gb.myhomework.repository.RepositoryLocal
 
-    override suspend fun getData(
-        word: String,
-        fromRemoteSource: Boolean
-    ): gb.myhomework.model.AppState {
-        return gb.myhomework.model.AppState.Success(
-            if (fromRemoteSource) {
-                repositoryRemote
-            } else {
-                repositoryLocal
-            }.getData(word)
+class HistoryInteractor(
+    private val repositoryRemote: Repository<List<SearchResultDto>>,
+    private val repositoryLocal: RepositoryLocal<List<SearchResultDto>>
+) : Interactor<AppState> {
+
+    override suspend fun getData(word: String, fromRemoteSource: Boolean): AppState {
+        return AppState.Success(
+            mapSearchResultToResult(
+                if (fromRemoteSource) {
+                    repositoryRemote
+                } else {
+                    repositoryLocal
+                }.getData(word)
+            )
         )
     }
 }
