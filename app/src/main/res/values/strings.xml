@@ -21,4 +21,5 @@
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_title_stub">Undefined error</string>
     <string name="module_history_name">history</string>
+    <string name="menu_title_settings">Settings</string>
 </resources>

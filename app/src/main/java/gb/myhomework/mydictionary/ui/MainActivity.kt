@@ -1,7 +1,9 @@
 package gb.myhomework.mydictionary.ui
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -119,7 +121,9 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.history_menu, menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
+        menu?.findItem(R.id.menu_screen_settings)?.isVisible =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -148,6 +152,11 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
                     }
                 true
             }
+            R.id.menu_screen_settings -> {
+                startActivityForResult(Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY), REQUEST_CODE)
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
