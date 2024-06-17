@@ -1,13 +1,17 @@
 package gb.myhomework.repository
 
-class RepositoryImplementationLocal(private val dataSource: gb.myhomework.repository.DataSourceLocal<List<gb.myhomework.model.DataModel>>) :
-    RepositoryLocal<List<gb.myhomework.model.DataModel>> {
+import gb.myhomework.model.AppState
+import gb.myhomework.model.dto.SearchResultDto
 
-    override suspend fun getData(word: String): List<gb.myhomework.model.DataModel> {
+class RepositoryImplementationLocal(private val dataSource: DataSourceLocal<List<SearchResultDto>>) :
+    RepositoryLocal<List<SearchResultDto>> {
+
+    override suspend fun getData(word: String): List<SearchResultDto> {
         return dataSource.getData(word)
     }
 
-    override suspend fun saveToDB(appState: gb.myhomework.model.AppState) {
+    override suspend fun saveToDB(appState: AppState) {
         dataSource.saveToDB(appState)
     }
 }
+
