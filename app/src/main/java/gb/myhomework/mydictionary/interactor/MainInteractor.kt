@@ -1,22 +1,22 @@
 package gb.myhomework.mydictionary.interactor
 
-import gb.myhomework.mydictionary.model.data.AppState
-import gb.myhomework.mydictionary.model.data.DataModel
-import gb.myhomework.mydictionary.model.repository.Repository
-import gb.myhomework.mydictionary.model.repository.RepositoryLocal
+import gb.myhomework.model.AppState
+import gb.myhomework.model.DataModel
+import gb.myhomework.repository.Repository
+import gb.myhomework.repository.RepositoryLocal
 
 class MainInteractor(
-    private val repositoryRemote: Repository<List<DataModel>>,
-    private val repositoryLocal: RepositoryLocal<List<DataModel>>
-) : Interactor<AppState> {
+    private val repositoryRemote: gb.myhomework.repository.Repository<List<gb.myhomework.model.DataModel>>,
+    private val repositoryLocal: gb.myhomework.repository.RepositoryLocal<List<gb.myhomework.model.DataModel>>
+) : gb.myhomework.core.interact.Interactor<gb.myhomework.model.AppState> {
 
-    override suspend fun getData(word: String, fromRemoteSource: Boolean): AppState {
-        val appState: AppState
+    override suspend fun getData(word: String, fromRemoteSource: Boolean): gb.myhomework.model.AppState {
+        val appState: gb.myhomework.model.AppState
         if (fromRemoteSource) {
-            appState = AppState.Success(repositoryRemote.getData(word))
+            appState = gb.myhomework.model.AppState.Success(repositoryRemote.getData(word))
             repositoryLocal.saveToDB(appState)
         } else {
-            appState = AppState.Success(repositoryLocal.getData(word))
+            appState = gb.myhomework.model.AppState.Success(repositoryLocal.getData(word))
         }
         return appState
     }

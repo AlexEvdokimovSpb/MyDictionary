@@ -1,7 +1,7 @@
 package gb.myhomework.mydictionary.ui.base
 
-import gb.myhomework.mydictionary.model.data.AppState
+import gb.myhomework.model.AppState
 
 interface MVPView {
-    fun renderData(appState: AppState)
+    fun renderData(appState: gb.myhomework.model.AppState)
 }
