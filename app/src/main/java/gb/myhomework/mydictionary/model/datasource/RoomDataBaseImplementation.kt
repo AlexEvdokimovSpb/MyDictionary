@@ -1,12 +1,11 @@
-package gb.myhomework.onlinedictionary.model.datasourse
+package gb.myhomework.mydictionary.model.datasource
 
 import gb.myhomework.mydictionary.model.data.DataModel
-import gb.myhomework.mydictionary.model.datasource.DataSource
-import io.reactivex.Observable
 
 class RoomDataBaseImplementation : DataSource<List<DataModel>> {
 
-    override fun getData(word: String): Observable<List<DataModel>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override suspend fun getData(word: String): List<DataModel> {
+        TODO("not implemented")
     }
 }
+
